@@ -1,0 +1,9 @@
+pip install git+https://github.com/jkbr/httpie.git#egg=httpie
+
+pip install -e .
+
+
+
+__init__
+from .functions import average, power
+from .greet import SayHello
