@@ -1,4 +1,3 @@
-import dataRetrieval
 import dataParse
 import plotly.graph_objects as go
 
@@ -7,8 +6,7 @@ def drawProtein(proteins, types=None, descriptionSearch=None, offsetSearch=None,
     types = [] if types is None else types
     dess = [] if descriptionSearch is None else descriptionSearch
     offset = [] if offsetSearch is None else offsetSearch
-    featuresDataFrame = dataParse.getFeaturesDataFrame(dataRetrieval.getProtein(proteins, showProgress),
-                                                       types, dess, offset)
+    featuresDataFrame = dataParse.getFeaturesDataFrame(proteins, types, dess, offset, showProgress)
 
     fig = go.Figure()
 
@@ -41,7 +39,6 @@ def drawProtein(proteins, types=None, descriptionSearch=None, offsetSearch=None,
                                )
             protName = newName
 
-
     fig.update_layout(
         title=title,
         xaxis=dict(showgrid=False, title='Protein Size', dtick=50),
@@ -49,7 +46,3 @@ def drawProtein(proteins, types=None, descriptionSearch=None, offsetSearch=None,
     )
 
     fig.show()
-
-
-drawProtein(["../Q04206.xml"], ['chain'], ['phos'], ['domain'])
-
