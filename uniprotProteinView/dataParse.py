@@ -1,7 +1,7 @@
 import pandas as pd
 import random
 import re
-import dataRetrieval
+import uniprotProteinView.dataRetrieval as dataRetrieval
 
 
 def randomColor():

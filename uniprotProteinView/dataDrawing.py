@@ -1,4 +1,4 @@
-import dataParse
+import uniprotProteinView.dataParse as dataParse
 import plotly.graph_objects as go
 
 
