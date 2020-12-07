@@ -1,47 +1,55 @@
 import dataRetrieval
 import dataParse
 import plotly.graph_objects as go
-import pandas as pd
 
 
-def drawProtein():
-    None
+def drawProtein(proteins, types=None, descriptionSearch=None, offsetSearch=None, title=None, showProgress=True):
+    types = [] if types is None else types
+    dess = [] if descriptionSearch is None else descriptionSearch
+    offset = [] if offsetSearch is None else offsetSearch
+    featuresDataFrame = dataParse.getFeaturesDataFrame(dataRetrieval.getProtein(proteins, showProgress),
+                                                       types, dess, offset)
+
+    fig = go.Figure()
+
+    protName = None
+    for index, row in featuresDataFrame.iterrows():
+        name = row['Name']
+        xi = row['Start']
+        xf = row['Finish']
+        yi = row['yStart']
+        yf = row['yStop']
+        clr = row['Color']
+        fig.add_trace(go.Scatter(x=[xi, xi, xf, xf],
+                                 y=[yi, yf, yf, yi],
+                                 fill='toself',
+                                 fillcolor=clr,
+                                 hoveron='fills',
+                                 line=dict(color="rgba(1,1,1,0.0)"),
+                                 name=name,
+                                 text=name,
+                                 hoverinfo='text+x+y'
+                                 ))
+        newName = row['ProtName']
+        if protName != newName:
+            fig.add_annotation(x=-0.01,
+                               y=yi + 0.5,
+                               text=newName,
+                               showarrow=False,
+                               xanchor="right",
+                               font=dict(size=8)
+                               )
+            protName = newName
 
 
-xml = dataRetrieval.getProtein(["../Q04206.xml", "../Q04207.xml"])
-featuresDataFrame = dataParse.getFeaturesDataFrame(xml, ['chain'])
+    fig.update_layout(
+        title=title,
+        xaxis=dict(showgrid=False, title='Protein Size', dtick=50),
+        yaxis=dict(showgrid=False, tickvals=[])
+    )
 
-#
-# df = pd.DataFrame([
-#     dict(Name="p65", Start=0, Finish=300, yStart=0, color="red"),
-#     dict(Name="     p65_domain", Start=80, Finish=210, yStart=0, color="purple"),
-#     dict(Name="p67", Start=0, Finish=170, yStart=1, color="green"),
-# ])
-#
-# fig = go.Figure()
-#
-# for index, row in df.iterrows():
-#     name = row['Name']
-#     xi = row['Start']
-#     xf = row['Finish']
-#     y = row['yStart']
-#     clr = row['color']
-#     fig.add_trace(go.Scatter(x=[xi, xi, xf, xf],
-#                              y=[y, y+1, y+1, y],
-#                              fill='toself',
-#                              fillcolor=clr,
-#                              hoveron='fills',
-#                              line=dict(color ="rgba(1,1,1,0.0)"),
-#                              name=name,
-#                              text=name,
-#                              hoverinfo='text+x+y'
-#                              ))
-#
-#
-# fig.update_layout(
-#     title="hover on <i>points</i> or <i>fill</i>",
-#     xaxis=dict(showgrid=False, title='Protein Size', dtick=50),
-#     yaxis=dict(showgrid=False, tickvals=[])
-# )
-#
-# fig.show()
+    fig.show()
+
+
+drawProtein(["../Q04206.xml"], ['chain'], ['phos'], ['domain'])
+
